@@ -1,6 +1,6 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.1.7
+Version:        1.1.9
 Release:        1
 License:        GPLv2+
 Source0:        https://code.citrite.net/rest/archive/latest/projects/XS/repos/%{name}/archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}.tar.gz
@@ -74,6 +74,15 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Fri Jul 27 2018 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.1.9-1
+- CP-28674 remove variables from bugtool
+- Revert "CP-28674 remove variables from bugtool"
+- CA-294376: delete xcp-networkd.log and v6d.log from the bugtool
+
+* Fri Jul 06 2018 Yang Qian <yang.qian@citrix.com> - 1.1.8-1
+- CA-292788: Ignore and print nonexistent pid when collecting fd usage
+- CA-292788: Print traceback when catching exception
+
 * Wed Sep 20 2017 Simon Rowe <simon.rowe@citrix.com> - 1.1.7-1
 - CP-23836: Dump the multicast table of OVS to XenServer Status Report
 
