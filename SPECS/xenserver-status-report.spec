@@ -1,7 +1,7 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
 Version:        1.1.9
-Release:        1
+Release:        1%{dist}
 License:        GPLv2+
 Source0:        https://code.citrite.net/rest/archive/latest/projects/XS/repos/%{name}/archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}.tar.gz
 BuildArch:      noarch
