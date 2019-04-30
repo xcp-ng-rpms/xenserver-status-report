@@ -1,9 +1,14 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.1.9
+Version:        1.1.10
 Release:        1
 License:        GPLv2+
-Source0:        https://code.citrite.net/rest/archive/latest/projects/XS/repos/%{name}/archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}.tar.gz
+
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz
+
+
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
+
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
 Requires:       hdparm, dmidecode, lvm2, bridge-utils, biosdevname, arptables
@@ -61,6 +66,7 @@ install -m 666 \
 
 # *** bugtool-conn-tests ***
 %package -n %{subpackage0_name}
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
 # 'Version' inherited from 'xenserver-status-report'
 Summary: Plugins for the XenServer bugtool to collect connectivity information
 
@@ -74,6 +80,9 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Fri Sep 28 2018 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.1.10-1
+- CP-28674: remove EFI variables from bugtool
+
 * Fri Jul 27 2018 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.1.9-1
 - CP-28674 remove variables from bugtool
 - Revert "CP-28674 remove variables from bugtool"
