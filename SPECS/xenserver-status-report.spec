@@ -1,13 +1,13 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.1.10
+Version:        1.2.6
 Release:        1%{?dist}
 License:        GPLv2+
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz
 
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz) = 53ccd87e5308ffcb6abc307e53df08e1c09d6dfc
 
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
@@ -66,7 +66,7 @@ install -m 666 \
 
 # *** bugtool-conn-tests ***
 %package -n %{subpackage0_name}
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz) = 53ccd87e5308ffcb6abc307e53df08e1c09d6dfc
 # 'Version' inherited from 'xenserver-status-report'
 Summary: Plugins for the XenServer bugtool to collect connectivity information
 
@@ -80,6 +80,27 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Fri Nov 15 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.6-1
+- CP-32427 Filter secrets from xapi-db
+
+* Thu Oct 24 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.5-1
+- CP-32039: gather NUMA memory information
+
+* Wed Jun 19 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.4-1
+- CA-317150: move bugtool plugins before log capture
+
+* Mon Jun 10 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.3-1
+- CP-31442: rename the tool to xen-ucode
+
+* Tue May 28 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.2-1
+- CP-31376: Improve bugtool filtering
+
+* Wed May 08 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.1-1
+- CP-31126: add output of xen-microcode
+
+* Wed Mar 27 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.0-1
+- CA-308916: Remove special vncterm coredump handling
+
 * Fri Sep 28 2018 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.1.10-1
 - CP-28674: remove EFI variables from bugtool
 
