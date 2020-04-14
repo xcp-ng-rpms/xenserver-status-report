@@ -1,13 +1,13 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.1.10
+Version:        1.1.11
 Release:        1
 License:        GPLv2+
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.11&format=tar.gz&prefix=xenserver-status-report-1.1.11#/xenserver-status-report.tar.gz
 
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.11&format=tar.gz&prefix=xenserver-status-report-1.1.11#/xenserver-status-report.tar.gz) = c89d7e88095ca356e1cc1659db79ed93fff1a797
 
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
@@ -66,7 +66,7 @@ install -m 666 \
 
 # *** bugtool-conn-tests ***
 %package -n %{subpackage0_name}
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.10&format=tar.gz&prefix=xenserver-status-report-1.1.10#/xenserver-status-report.tar.gz) = 7a6dbdb145d5812f7cf0c38892c51ce329b9933e
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.1.11&format=tar.gz&prefix=xenserver-status-report-1.1.11#/xenserver-status-report.tar.gz) = c89d7e88095ca356e1cc1659db79ed93fff1a797
 # 'Version' inherited from 'xenserver-status-report'
 Summary: Plugins for the XenServer bugtool to collect connectivity information
 
@@ -80,6 +80,9 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Fri Apr 03 2020 Igor Druzhinin <igor.druzhinin@citrix.com> - 1.1.11-1
+- CP-31376: Improve bugtool filtering
+
 * Fri Sep 28 2018 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.1.10-1
 - CP-28674: remove EFI variables from bugtool
 
