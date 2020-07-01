@@ -1,7 +1,7 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
 Version:        1.2.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+
 
 Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz
@@ -12,7 +12,7 @@ Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
 Requires:       hdparm, dmidecode, lvm2, bridge-utils, biosdevname, arptables
-Requires:       ebtables, ethtool, pciutils, pmtools, sg3_utils
+Requires:       ebtables, ethtool, pciutils, pmtools, sg3_utils, iproute-tc
 
 %define bin0_name xen-bugtool
 
@@ -80,6 +80,9 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Fri Jan 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.6-2
+- Add iproute-tc as a dependency
+
 * Fri Nov 15 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.6-1
 - CP-32427 Filter secrets from xapi-db
 
