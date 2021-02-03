@@ -1,13 +1,13 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.2.6
-Release:        2
+Version:        1.2.8
+Release:        1
 License:        GPLv2+
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz
 
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz) = 53ccd87e5308ffcb6abc307e53df08e1c09d6dfc
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz) = 36c60dd93a4ee412afa28d40420cd10572561c2c
 
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
@@ -66,7 +66,7 @@ install -m 666 \
 
 # *** bugtool-conn-tests ***
 %package -n %{subpackage0_name}
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.6&format=tar.gz&prefix=xenserver-status-report-1.2.6#/xenserver-status-report.tar.gz) = 53ccd87e5308ffcb6abc307e53df08e1c09d6dfc
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz) = 36c60dd93a4ee412afa28d40420cd10572561c2c
 # 'Version' inherited from 'xenserver-status-report'
 Summary: Plugins for the XenServer bugtool to collect connectivity information
 
@@ -80,6 +80,14 @@ on the connectivity status.
 # *** end ***
 
 %changelog
+* Mon Dec 21 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
+- CA-350311: Capture chrony information in bugtool
+
+* Wed Jun 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.7-1
+- Fix -u help message to correspond the result
+- CA-341602: Calculate start time on per-process basis
+- CA-341602: Do not start all of the process groups in parallel
+
 * Fri Jan 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.6-2
 - Add iproute-tc as a dependency
 
