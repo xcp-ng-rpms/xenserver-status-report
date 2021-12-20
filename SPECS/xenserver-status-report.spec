@@ -1,23 +1,21 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.2.8
+Version:        1.2.10
 Release:        1%{?dist}
 License:        GPLv2+
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz
+Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz
 
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz) = 36c60dd93a4ee412afa28d40420cd10572561c2c
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz) = c0cbf93b4944042fe5c637cb81ba5bf1b76093f7
 
 BuildArch:      noarch
 BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
 Requires:       hdparm, dmidecode, lvm2, bridge-utils, biosdevname, arptables
 Requires:       ebtables, ethtool, pciutils, pmtools, sg3_utils, iproute-tc
+Obsoletes:      bugtool-conn-tests
 
 %define bin0_name xen-bugtool
-
-%define subpackage0_name bugtool-conn-tests
-%define subpackage0_destdir %{_sysconfdir}/xensource/bugtool
 
 %description
 The %{name} package collects various system configuration and state to aid in
@@ -47,16 +45,6 @@ chmod 644 %{buildroot}/%{_mandir}/man1/%{bin0_name}.1
 ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
    %{buildroot}/%{_mandir}/man1/%{name}.1
 
-# *** bugtool-conn-tests ***
-install -m 755 -d %{buildroot}/%{subpackage0_destdir}/conntest
-install -m 666 \
-    ext/%{subpackage0_name}/config/conntest.xml \
-    %{buildroot}%{subpackage0_destdir}
-install -m 666 \
-    ext/%{subpackage0_name}/config/conntest/* \
-    %{buildroot}%{subpackage0_destdir}/conntest
-# *** end ***
-
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
@@ -64,22 +52,13 @@ install -m 666 \
 %doc %{_mandir}/man1/%{name}.1.gz
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
-# *** bugtool-conn-tests ***
-%package -n %{subpackage0_name}
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.8&format=tar.gz&prefix=xenserver-status-report-1.2.8#/xenserver-status-report.tar.gz) = 36c60dd93a4ee412afa28d40420cd10572561c2c
-# 'Version' inherited from 'xenserver-status-report'
-Summary: Plugins for the XenServer bugtool to collect connectivity information
-
-%description -n %{subpackage0_name}
-The %{name} package includes extensions for XenServer's bugtool to gather info
-on the connectivity status.
-
-%files -n %{subpackage0_name}
-%defattr(-,root,root,-)
-%{subpackage0_destdir}/*
-# *** end ***
-
 %changelog
+* Mon Aug 30 2021 Lin Liu <lin.liu@citrix.com> - 1.2.10-1
+- CP-36092: Backport winbind to Yangtze
+
+* Thu Jan 28 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.9-1
+- CA-350866: Remove bugtool-conn-tests extension
+
 * Mon Dec 21 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
 - CA-350311: Capture chrony information in bugtool
 
