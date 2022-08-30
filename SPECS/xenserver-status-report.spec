@@ -1,18 +1,54 @@
+%global package_speccommit be15e5dabed7041bf460bab4900c769b0ec02a23
+%global package_srccommit v1.3.6
+
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.2.10
-Release:        1%{?dist}
+Version: 1.3.6
+Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
-
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz
-
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz) = c0cbf93b4944042fe5c637cb81ba5bf1b76093f7
-
+Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
-BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
-Requires:       hdparm, dmidecode, lvm2, bridge-utils, biosdevname, arptables
-Requires:       ebtables, ethtool, pciutils, pmtools, sg3_utils, iproute-tc
+BuildRequires:  help2man
+
+# Keep in sync with the External Programs list.
+Requires:       acpica-tools
+Requires:       arptables
+Requires:       biosdevname
+Requires:       bridge-utils
+Requires:       chkconfig
+Requires:       chrony
+Requires:       coreutils
+Requires:       device-mapper
+Requires:       device-mapper-multipath
+Requires:       dmidecode
+Requires:       ebtables
+Requires:       efibootmgr
+Requires:       ethtool
+Requires:       fcoe-utils
+Requires:       gzip
+Requires:       hdparm
+Requires:       iproute
+Requires:       iproute-tc
+Requires:       iptables
+Requires:       iscsi-initiator-utils
+Requires:       kmod
+Requires:       kpatch
+Requires:       lldpad
+Requires:       lvm2
+Requires:       mdadm
+Requires:       net-tools
+Requires:       openvswitch
+Requires:       pciutils
+Requires:       procps-ng
+Requires:       sg3_utils
+Requires:       systemd
+Requires:       util-linux
+Requires:       xapi-core
+Requires:       xapi-xe
+Requires:       xen-dom0-tools
+Requires:       xenopsd-xc
+Requires:       xen-tools
+
 Obsoletes:      bugtool-conn-tests
 
 %define bin0_name xen-bugtool
@@ -53,14 +89,38 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
-* Mon Aug 30 2021 Lin Liu <lin.liu@citrix.com> - 1.2.10-1
-- CP-36092: Backport winbind to Yangtze
+* Tue Apr 12 2022 Lin Liu <lin.liu@citrix.com> - 1.3.6-1
+- CA-355588: Include AD users and groups in the bugtool
+
+* Thu Nov 25 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.5-1
+- CP-38679: Include /proc/xsversion in the bugtool
+
+* Wed Sep 29 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.4-1
+- CA-358870: Removed filename parameter and usage from func_output to fix error in the unclustered case
+- CA-358870: added exception to prevent file not found error in the unclusterd case
+
+* Tue Sep 14 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.3-1
+- CA-355820: Filter out cluster_token from bugtool
+
+* Fri May 28 2021 Lin Liu <lin.liu@citrix.com> - 1.3.2-1
+- CP-36092: Collect samba winbind info and logs
+
+* Fri May 07 2021 Mark Syms <mark.syms@citrix.com> - 1.3.1-1
+- CA-353772: Add capture of iSCSI iface information
+
+* Thu Feb 18 2021 Andrew Cooper <andrew.cooper3@citrix.com> - 1.3.0-1
+- Fix multiple pylint error/warnings
+- Drop collection of obsolete logfiles
+- Correct the build and runtime dependencies
 
 * Thu Jan 28 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.9-1
-- CA-350866: Remove bugtool-conn-tests extension
+- CA-350866: Remove bugtool-conn-tests package
 
-* Mon Dec 21 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
+* Wed Dec 23 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
 - CA-350311: Capture chrony information in bugtool
+
+* Wed Jun 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.7-2
+- CP-35517: Drop busybox as a BuildRequires
 
 * Wed Jun 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.7-1
 - Fix -u help message to correspond the result
