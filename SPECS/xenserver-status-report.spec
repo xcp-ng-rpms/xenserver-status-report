@@ -1,14 +1,15 @@
-%global package_speccommit be15e5dabed7041bf460bab4900c769b0ec02a23
-%global package_srccommit v1.3.6
+%global package_speccommit 639a40f24a2be7d39858017a804499cdcd8c158a
+%global package_srccommit v1.3.8
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 1.3.6
+Version: 1.3.8
 Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
 BuildRequires:  help2man
+BuildRequires:  python-defusedxml
 
 # Keep in sync with the External Programs list.
 Requires:       acpica-tools
@@ -40,6 +41,7 @@ Requires:       net-tools
 Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
+Requires:       python-defusedxml
 Requires:       sg3_utils
 Requires:       systemd
 Requires:       util-linux
@@ -89,6 +91,13 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
+* Thu Sep 22 2022 Lin Liu <lin.liu@citrix.com> - 1.3.8-1
+- CA-369805: EFI-variables in snapshot data is not filtered
+
+* Fri Sep 16 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.7-1
+- CP-38441: Add bugtool support for vTPM
+- CA-369841: XSI-1298 xen-bugtool command takes over 1 hour to collect xenserver-databases
+
 * Tue Apr 12 2022 Lin Liu <lin.liu@citrix.com> - 1.3.6-1
 - CA-355588: Include AD users and groups in the bugtool
 
