@@ -1,10 +1,10 @@
-%global package_speccommit 639a40f24a2be7d39858017a804499cdcd8c158a
-%global package_srccommit v1.3.8
+%global package_speccommit 45a979d910c567caef49972b6e1685c3d332b760
+%global package_srccommit v1.3.11
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 1.3.8
-Release: 1%{?xsrel}%{?dist}
+Version:        1.3.11
+Release:        1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
@@ -91,6 +91,15 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
+* Wed May 10 2023 Xueqing Zhang <xueqing.zhang@citrix.com> - 1.3.11-1
+- CP-42688: Collect NRPE config files
+
+* Tue Apr 18 2023 Lin Liu <lin.liu@citrix.com> - 1.3.10-1
+- Fix up some legacy configuration files
+
+* Wed Mar 22 2023 Xueqing Zhang <xueqing.zhang@citrix.com> - 1.3.9-1
+- CP-41620: Update status report to collect telemetry logs
+
 * Thu Sep 22 2022 Lin Liu <lin.liu@citrix.com> - 1.3.8-1
 - CA-369805: EFI-variables in snapshot data is not filtered
 
