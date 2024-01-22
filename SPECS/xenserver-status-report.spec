@@ -1,9 +1,9 @@
-%global package_speccommit 45a979d910c567caef49972b6e1685c3d332b760
-%global package_srccommit v1.3.11
+%global package_speccommit d40026ba3353f9639d948963bd37ecaca4236c66
+%global package_srccommit v1.3.14
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.3.11
+Version:        1.3.14
 Release:        1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report.tar.gz
@@ -91,6 +91,23 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
+* Thu Oct 19 2023 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.14-1
+- CA-383852: Fix output from `sar -A`, move `sar` to `cap(system-load)`
+
+* Tue Oct  3 2023 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.13-1
+- CP-45506: Also add testcase for the subarchive at etc/systemd.tar
+- CP-45506: Archive /etc/systemd as a tar archive inside the output
+
+* Tue Sep 26 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.12-1
+- CA-378768: capture block schedulers
+- Capture the contents of the cron dirs
+- CP-41107: Store bug tool log in status report
+- CP-43806: Collect `xen-cpuid -p`
+- Collect customised multipath configuration
+- Remove obsolete MPP from bugtool
+- CP-42688: Collect NRPE config files
+- XSI-1385: Collect plain text (human-readable) SAR file reports
+
 * Wed May 10 2023 Xueqing Zhang <xueqing.zhang@citrix.com> - 1.3.11-1
 - CP-42688: Collect NRPE config files
 
