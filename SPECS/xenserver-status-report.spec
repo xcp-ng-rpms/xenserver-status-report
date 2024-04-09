@@ -1,9 +1,9 @@
-%global package_speccommit d40026ba3353f9639d948963bd37ecaca4236c66
-%global package_srccommit v1.3.14
+%global package_speccommit b258131247157d376b04e2dfa99a7f3c8aea31e2
+%global package_srccommit v2.0.3
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.3.14
+Version:        2.0.3
 Release:        1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report.tar.gz
@@ -91,6 +91,21 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
+* Thu Feb 22 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 2.0.3-1
+- CA-389135: Fix saving RRDs using the hidden --entries=persistent-stats flag
+- CA-389176: Fix collecting the /var/log/xcp-rrdd-plugin logs when --all is used
+- CA-389177: Fix interactive yes/no question mode (if --yestoall is not passed)
+
+* Wed Feb 14 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 2.0.1-1
+- CA-388587: Update to collect the latest xapi-clusterd database
+
+* Tue Jan 30 2024 Deli Zhang <deli.zhang@cloud.com> - 2.0.0-2
+- CP-47448: Fix release number in koji
+
+* Fri Jan 26 2024 Deli Zhang <deli.zhang@cloud.com> - 2.0.0-1
+- CP-44440: Collect SNMP config files
+- CP-41819: Partial python3 support
+
 * Thu Oct 19 2023 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.14-1
 - CA-383852: Fix output from `sar -A`, move `sar` to `cap(system-load)`
 
