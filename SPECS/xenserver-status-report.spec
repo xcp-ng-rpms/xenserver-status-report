@@ -1,15 +1,22 @@
-%global package_speccommit b258131247157d376b04e2dfa99a7f3c8aea31e2
-%global package_srccommit v2.0.3
+%global package_speccommit 6c63345c01862cd28cbfed03f9118635a1b79e4e
+%{!?xsrel: %global xsrel 2}
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        2.0.3
-Release:        1%{?xsrel}%{?dist}
+Version:        2.0.5
+Release:        %{?xsrel}%{?dist}
 License:        GPLv2+
+%global repo    https://code.citrite.net/rest/archive/latest/projects/XSU/repos/status-report
+%global file    archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}.tar.gz
 Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
+%if 0%{?xenserver} < 9
 BuildRequires:  help2man
+%endif
 BuildRequires:  python-defusedxml
+# Same code is used for XS8/python2 and XS9/python3
+# we disable the shebang check here
+%global __brp_mangle_shebangs %nil
 
 # Keep in sync with the External Programs list.
 Requires:       acpica-tools
@@ -25,7 +32,9 @@ Requires:       dmidecode
 Requires:       ebtables
 Requires:       efibootmgr
 Requires:       ethtool
+%if 0%{?xenserver} < 9
 Requires:       fcoe-utils
+%endif
 Requires:       gzip
 Requires:       hdparm
 Requires:       iproute
@@ -34,7 +43,9 @@ Requires:       iptables
 Requires:       iscsi-initiator-utils
 Requires:       kmod
 Requires:       kpatch
+%if 0%{?xenserver} < 9
 Requires:       lldpad
+%endif
 Requires:       lvm2
 Requires:       mdadm
 Requires:       net-tools
@@ -51,8 +62,6 @@ Requires:       xen-dom0-tools
 Requires:       xenopsd-xc
 Requires:       xen-tools
 
-Obsoletes:      bugtool-conn-tests
-
 %define bin0_name xen-bugtool
 
 %description
@@ -62,12 +71,14 @@ diagnosing issues.
 %prep
 %autosetup -p1
 
+%build
 %install
 install -m 755 -d %{buildroot}/%{_sbindir}
 install -m 755 -p %{bin0_name} %{buildroot}/%{_sbindir}
 ln %{buildroot}/%{_sbindir}/%{bin0_name} \
    %{buildroot}/%{_sbindir}/%{name}
 
+%if 0%{?xenserver} < 9
 install -m 755 -d %{buildroot}/%{_mandir}/man1
 help2man \
     -n 'pack diagnostic information' \
@@ -82,15 +93,29 @@ help2man \
 chmod 644 %{buildroot}/%{_mandir}/man1/%{bin0_name}.1
 ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
    %{buildroot}/%{_mandir}/man1/%{name}.1
+%endif
 
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
 %{_sbindir}/%{bin0_name}
+%if 0%{?xenserver} < 9
 %doc %{_mandir}/man1/%{name}.1.gz
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
+%endif
 
 %changelog
+* Mon Jun 24 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 2.0.5-2
+- CP-49659:  Fix collecting kernel module infos with non-latin strings
+- CA-394409: Fix collecting logs for HW certification and tapdisk
+
+* Thu May 16 2024 Deli Zhang <deli.zhang@cloud.com> - 2.0.4-2
+- CP-46076: On XS9, no longer require the FCoE and lldpad packages
+
+* Tue Mar 26 2024 Lin Liu <Lin.Liu01@cloud.com> - 2.0.4-1
+- CP-48613: Build with XS9
+- Fixes for error handling and error logging
+
 * Thu Feb 22 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 2.0.3-1
 - CA-389135: Fix saving RRDs using the hidden --entries=persistent-stats flag
 - CA-389176: Fix collecting the /var/log/xcp-rrdd-plugin logs when --all is used
