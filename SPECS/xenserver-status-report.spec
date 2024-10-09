@@ -1,18 +1,56 @@
+%global package_speccommit 3a690014d1e9ba93910894312dd6ed7f9efac4c3
+%global package_srccommit v1.3.16
+
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.2.10
-Release:        1%{?dist}
+Version:        1.3.16
+Release:        3%{?xsrel}%{?dist}
 License:        GPLv2+
-
-Source0: https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz
-
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/xenserver-status-report/archive?at=v1.2.10&format=tar.gz&prefix=xenserver-status-report-1.2.10#/xenserver-status-report.tar.gz) = c0cbf93b4944042fe5c637cb81ba5bf1b76093f7
-
+Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
-BuildRequires:  python-devel xapi-core xen-dom0-tools busybox help2man
-Requires:       hdparm, dmidecode, lvm2, bridge-utils, biosdevname, arptables
-Requires:       ebtables, ethtool, pciutils, pmtools, sg3_utils, iproute-tc
+BuildRequires:  help2man
+BuildRequires:  python-defusedxml
+
+# Keep in sync with the External Programs list.
+Requires:       acpica-tools
+Requires:       arptables
+Requires:       biosdevname
+Requires:       bridge-utils
+Requires:       chkconfig
+Requires:       chrony
+Requires:       coreutils
+Requires:       device-mapper
+Requires:       device-mapper-multipath
+Requires:       dmidecode
+Requires:       ebtables
+Requires:       efibootmgr
+Requires:       ethtool
+Requires:       fcoe-utils
+Requires:       gzip
+Requires:       hdparm
+Requires:       iproute
+Requires:       iproute-tc
+Requires:       iptables
+Requires:       iscsi-initiator-utils
+Requires:       kmod
+Requires:       kpatch
+Requires:       lldpad
+Requires:       lvm2
+Requires:       mdadm
+Requires:       net-tools
+Requires:       openvswitch
+Requires:       pciutils
+Requires:       procps-ng
+Requires:       python-defusedxml
+Requires:       sg3_utils
+Requires:       systemd
+Requires:       util-linux
+Requires:       xapi-core
+Requires:       xapi-xe
+Requires:       xen-dom0-tools
+Requires:       xenopsd-xc
+Requires:       xen-tools
+
 Obsoletes:      bugtool-conn-tests
 
 %define bin0_name xen-bugtool
@@ -53,14 +91,77 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
-* Mon Aug 30 2021 Lin Liu <lin.liu@citrix.com> - 1.2.10-1
-- CP-36092: Backport winbind to Yangtze
+* Mon Feb 19 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.16-3
+- CA-388587: Backport capturing the xapi-clusterd database (filtered)
+
+* Wed Feb  7 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.15-1
+- CP-45506: Interactive mode: Fix not adding files below /etc/systemd/ on "n"
+
+* Thu Oct 19 2023 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.14-1
+- CA-383852: Fix output from `sar -A`, move `sar` to `cap(system-load)`
+
+* Tue Oct  3 2023 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.13-1
+- CP-45506: Also add testcase for the subarchive at etc/systemd.tar
+- CP-45506: Archive /etc/systemd as a tar archive inside the output
+
+* Tue Sep 26 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.12-1
+- CA-378768: capture block schedulers
+- Capture the contents of the cron dirs
+- CP-41107: Store bug tool log in status report
+- CP-43806: Collect `xen-cpuid -p`
+- Collect customised multipath configuration
+- Remove obsolete MPP from bugtool
+- CP-42688: Collect NRPE config files
+- XSI-1385: Collect plain text (human-readable) SAR file reports
+
+* Wed May 10 2023 Xueqing Zhang <xueqing.zhang@citrix.com> - 1.3.11-1
+- CP-42688: Collect NRPE config files
+
+* Tue Apr 18 2023 Lin Liu <lin.liu@citrix.com> - 1.3.10-1
+- Fix up some legacy configuration files
+
+* Wed Mar 22 2023 Xueqing Zhang <xueqing.zhang@citrix.com> - 1.3.9-1
+- CP-41620: Update status report to collect telemetry logs
+
+* Thu Sep 22 2022 Lin Liu <lin.liu@citrix.com> - 1.3.8-1
+- CA-369805: EFI-variables in snapshot data is not filtered
+
+* Fri Sep 16 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.7-1
+- CP-38441: Add bugtool support for vTPM
+- CA-369841: XSI-1298 xen-bugtool command takes over 1 hour to collect xenserver-databases
+
+* Tue Apr 12 2022 Lin Liu <lin.liu@citrix.com> - 1.3.6-1
+- CA-355588: Include AD users and groups in the bugtool
+
+* Thu Nov 25 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.5-1
+- CP-38679: Include /proc/xsversion in the bugtool
+
+* Wed Sep 29 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.4-1
+- CA-358870: Removed filename parameter and usage from func_output to fix error in the unclustered case
+- CA-358870: added exception to prevent file not found error in the unclusterd case
+
+* Tue Sep 14 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.3.3-1
+- CA-355820: Filter out cluster_token from bugtool
+
+* Fri May 28 2021 Lin Liu <lin.liu@citrix.com> - 1.3.2-1
+- CP-36092: Collect samba winbind info and logs
+
+* Fri May 07 2021 Mark Syms <mark.syms@citrix.com> - 1.3.1-1
+- CA-353772: Add capture of iSCSI iface information
+
+* Thu Feb 18 2021 Andrew Cooper <andrew.cooper3@citrix.com> - 1.3.0-1
+- Fix multiple pylint error/warnings
+- Drop collection of obsolete logfiles
+- Correct the build and runtime dependencies
 
 * Thu Jan 28 2021 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.9-1
-- CA-350866: Remove bugtool-conn-tests extension
+- CA-350866: Remove bugtool-conn-tests package
 
-* Mon Dec 21 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
+* Wed Dec 23 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.8-1
 - CA-350311: Capture chrony information in bugtool
+
+* Wed Jun 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.7-2
+- CP-35517: Drop busybox as a BuildRequires
 
 * Wed Jun 24 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 1.2.7-1
 - Fix -u help message to correspond the result
