@@ -1,10 +1,10 @@
-%global package_speccommit 3a690014d1e9ba93910894312dd6ed7f9efac4c3
-%global package_srccommit v1.3.16
+%global package_speccommit b33f5d317f5b2e70576369c07745d5eb854aea8e
+%global package_srccommit v1.3.17
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        1.3.16
-Release:        3%{?xsrel}%{?dist}
+Version:        1.3.17
+Release:        1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
@@ -91,6 +91,12 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %doc %{_mandir}/man1/%{bin0_name}.1.gz
 
 %changelog
+* Wed Sep 11 2024 Lin Liu <Lin.Liu01@cloud.com> - 1.3.17-1
+- Backport re-adding PowerBroker Identity Service/PBIS
+- CP-41238: Run commands before collecting directories
+- Fix to preserve the directory traversal order in Python2
+- CP-49944: plugins: Fix multiple file patterns for the same directory
+
 * Mon Feb 19 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 1.3.16-3
 - CA-388587: Backport capturing the xapi-clusterd database (filtered)
 
