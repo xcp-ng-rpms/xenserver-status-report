@@ -1,13 +1,13 @@
-%global package_speccommit 6c63345c01862cd28cbfed03f9118635a1b79e4e
-%{!?xsrel: %global xsrel 2}
+%global package_speccommit 0364e26408d56d618920e68137e0680bbffbc625
+%global package_srccommit v2.0.7
+%{!?xsrel: %global xsrel 1}
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version:        2.0.5
+Version: 2.0.7
 Release:        %{?xsrel}%{?dist}
 License:        GPLv2+
-%global repo    https://code.citrite.net/rest/archive/latest/projects/XSU/repos/status-report
-%global file    archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}.tar.gz
+# Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
 Source0: xenserver-status-report.tar.gz
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
@@ -53,6 +53,10 @@ Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
 Requires:       python-defusedxml
+# For creating '/usr/bin/python' symlink to python3
+%if 0%{?xenserver} >= 9
+Requires:       python-unversioned-command
+%endif
 Requires:       sg3_utils
 Requires:       systemd
 Requires:       util-linux
@@ -105,6 +109,15 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Thu Nov 21 2024 Mark Syms <mark.syms@citrix.com> - 2.0.7-1
+- Add scsi disk provisioning mode
+
+* Thu Nov 21 2024 Mark Syms <mark.syms@cloud.com> - 2.0.6-1
+- Rebuild
+
+* Wed Jul 31 2024 Stephen Cheng <stephen.cheng@cloud.com> - 2.0.5-3
+- CP-49148:  Add python-unversioned-command for creating 'python' symlink to python3
+
 * Mon Jun 24 2024 Bernhard Kaindl <bernhard.kaindl@cloud.com> - 2.0.5-2
 - CP-49659:  Fix collecting kernel module infos with non-latin strings
 - CA-394409: Fix collecting logs for HW certification and tapdisk
