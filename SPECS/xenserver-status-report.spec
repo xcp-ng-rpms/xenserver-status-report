@@ -1,11 +1,11 @@
-%global package_speccommit 0364e26408d56d618920e68137e0680bbffbc625
-%global package_srccommit v2.0.7
+%global package_speccommit 536cedaee4cbfa5d239f758fd002389df41975e9
+%global package_srccommit v2.0.11
 %{!?xsrel: %global xsrel 1}
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 2.0.7
-Release:        %{?xsrel}%{?dist}
+Version: 2.0.11
+Release: %{?xsrel}%{?dist}
 License:        GPLv2+
 # Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
 Source0: xenserver-status-report.tar.gz
@@ -23,7 +23,6 @@ Requires:       acpica-tools
 Requires:       arptables
 Requires:       biosdevname
 Requires:       bridge-utils
-Requires:       chkconfig
 Requires:       chrony
 Requires:       coreutils
 Requires:       device-mapper
@@ -48,7 +47,6 @@ Requires:       lldpad
 %endif
 Requires:       lvm2
 Requires:       mdadm
-Requires:       net-tools
 Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
@@ -109,6 +107,22 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Thu Dec 26 2024 Ming Lu <ming.lu@cloud.com> - 2.0.11-1
+- CP-52905: Add collection for license server telemetry logs
+- CA-403717: Make XEN_RT mode additive for entries
+
+* Thu Dec 12 2024 Lin Liu <Lin.Liu01@cloud.com> - 2.0.9-2
+- CP-51767: Keep master compatible with XS8 and XS9
+
+* Mon Dec 9 2024 Lin Liu <Lin.Liu01@cloud.com> - 2.0.9-1
+- CP-51767: Replace Requires net-tools with iproute
+
+* Mon Dec 02 2024 Lin Liu <Lin.Liu01@cloud.com> - 2.0.8-2
+- CP-50546: Remove requires chkconfig
+
+* Tue Nov 26 2024 Lin Liu <Lin.Liu01@cloud.com> - 2.0.8-1
+- CP-50546: Remove collecting 'chkconfig --list'
+
 * Thu Nov 21 2024 Mark Syms <mark.syms@citrix.com> - 2.0.7-1
 - Add scsi disk provisioning mode
 
