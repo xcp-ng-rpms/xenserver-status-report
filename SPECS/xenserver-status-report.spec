@@ -1,11 +1,10 @@
-%global package_speccommit 536cedaee4cbfa5d239f758fd002389df41975e9
-%global package_srccommit v2.0.11
-%{!?xsrel: %global xsrel 1}
+%global package_speccommit 85ec815ee602854c406f89d067db620bc52b8c12
+%global package_srccommit v2.0.15
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 2.0.11
-Release: %{?xsrel}%{?dist}
+Version: 2.0.15
+Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
 # Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
 Source0: xenserver-status-report.tar.gz
@@ -107,6 +106,19 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Mon Jun 09 2025 Mark Syms <mark.syms@cloud.com> - 2.0.15-1
+- CP-308256: gather SR sqlite3-metadata.db files
+
+* Wed May 21 2025 Mark Syms <mark.syms@cloud.com> - 2.0.14-1
+- CP-307935: Gather FC host information
+
+* Tue Mar 11 2025 Stephen Cheng <stephen.cheng@cloud.com> - 2.0.13-1
+- CP-53777: Collect dnf5 logs
+
+* Thu Mar 06 2025 Stephen Cheng <stephen.cheng@cloud.com> - 2.0.12-1
+- CA-399631: Increase the max size of xenserver-config for bug-tool
+- CP-52714: Include rolled over xha logs into a server status report
+
 * Thu Dec 26 2024 Ming Lu <ming.lu@cloud.com> - 2.0.11-1
 - CP-52905: Add collection for license server telemetry logs
 - CA-403717: Make XEN_RT mode additive for entries
