@@ -1,9 +1,9 @@
-%global package_speccommit 85ec815ee602854c406f89d067db620bc52b8c12
-%global package_srccommit v2.0.15
+%global package_speccommit 55d6972c9d145d8c0b8c51709fa209c6f29909dd
+%global package_srccommit v2.1.0
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 2.0.15
+Version: 2.1.0
 Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
 # Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
@@ -12,56 +12,21 @@ BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
 %endif
-BuildRequires:  python-defusedxml
+BuildRequires:  python3-defusedxml
 # Same code is used for XS8/python2 and XS9/python3
 # we disable the shebang check here
 %global __brp_mangle_shebangs %nil
 
-# Keep in sync with the External Programs list.
 Requires:       acpica-tools
+%if 0%{?xenserver} < 9
 Requires:       arptables
-Requires:       biosdevname
-Requires:       bridge-utils
-Requires:       chrony
-Requires:       coreutils
-Requires:       device-mapper
-Requires:       device-mapper-multipath
-Requires:       dmidecode
 Requires:       ebtables
-Requires:       efibootmgr
-Requires:       ethtool
-%if 0%{?xenserver} < 9
-Requires:       fcoe-utils
 %endif
-Requires:       gzip
 Requires:       hdparm
-Requires:       iproute
 Requires:       iproute-tc
-Requires:       iptables
-Requires:       iscsi-initiator-utils
-Requires:       kmod
-Requires:       kpatch
-%if 0%{?xenserver} < 9
-Requires:       lldpad
-%endif
-Requires:       lvm2
-Requires:       mdadm
-Requires:       openvswitch
-Requires:       pciutils
-Requires:       procps-ng
-Requires:       python-defusedxml
-# For creating '/usr/bin/python' symlink to python3
-%if 0%{?xenserver} >= 9
-Requires:       python-unversioned-command
-%endif
-Requires:       sg3_utils
-Requires:       systemd
-Requires:       util-linux
+Requires:       python3-defusedxml
 Requires:       xapi-core
-Requires:       xapi-xe
 Requires:       xen-dom0-tools
-Requires:       xenopsd-xc
-Requires:       xen-tools
 
 %define bin0_name xen-bugtool
 
@@ -106,6 +71,22 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Wed Nov 26 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.1.0-1
+- CP-309293: Remove most dependencies on external programs
+- Switch the Python shebang to use Python3
+- Add missing b to binary string
+- Ensure we collect system logs
+
+* Fri Aug 08 2025 Bengang Yuan <bengang.yuan@cloud.com> - 2.0.18-1
+- Revert "Merge pull request #138 from stephenchengCloud/private/stephenche/CP-51925"
+- CP-308824: collect nft and firewall-cmd output
+
+* Fri Jul 25 2025 Stephen Cheng <stephen.cheng@cloud.com> - 2.0.17-1
+- CP-51925: Remove fcoe from bug-tool
+
+* Wed Jul 09 2025 Chunjie Zhu <chunjie.zhu@cloud.com> - 2.0.16-1
+- CP-308325: add driver multi version info dump data
+
 * Mon Jun 09 2025 Mark Syms <mark.syms@cloud.com> - 2.0.15-1
 - CP-308256: gather SR sqlite3-metadata.db files
 
