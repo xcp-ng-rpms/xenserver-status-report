@@ -4,7 +4,7 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
 Version: 2.1.0
-Release: 1%{?xsrel}%{?dist}
+Release: 1%{?xsrel}.0.feb.1%{?dist}
 License:        GPLv2+
 # Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
 Source0: xenserver-status-report.tar.gz
