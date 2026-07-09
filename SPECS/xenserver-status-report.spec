@@ -1,13 +1,12 @@
-%global package_speccommit 55d6972c9d145d8c0b8c51709fa209c6f29909dd
-%global package_srccommit v2.1.0
+%global package_speccommit 1ab9672c547e8d312d41d627337bf548fdd0d770
+%global package_srccommit v2.1.2
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 2.1.0
+Version: 2.1.2
 Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
-# Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
-Source0: xenserver-status-report.tar.gz
+Source0: xenserver-status-report-2.1.2.tar.gz
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
@@ -21,6 +20,8 @@ Requires:       acpica-tools
 %if 0%{?xenserver} < 9
 Requires:       arptables
 Requires:       ebtables
+%else
+Requires:       hwloc-bugtool-plugin
 %endif
 Requires:       hdparm
 Requires:       iproute-tc
@@ -71,6 +72,17 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Tue May 12 2026 Gerald Elder-Vass <gerald.elder-vass@citrix.com> - 2.1.2-1
+- CA-427358: Fix default value of readlines
+- Update testing environment and unit tests
+- Update documentation
+- Address pylint/markdownlint warnings
+- Remove outdated Python 2.7 support
+
+* Wed Jan 21 2026 Bernhard Kaindl <bernhard.kaindl@citrix.com> - 2.1.1-1
+- CP-309679: Add Recommends for installing hwloc-bugtool-plugin to collect NUMA topology
+- CA-422743: Fix Kernel lockdown errors from debugfs accesses and cleanup Python 2.7 code
+
 * Wed Nov 26 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.1.0-1
 - CP-309293: Remove most dependencies on external programs
 - Switch the Python shebang to use Python3
