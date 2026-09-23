@@ -1,5 +1,7 @@
 RPM sources for the xenserver-status-report package in XCP-ng (https://xcp-ng.org/).
 
+Upstream repository: https://github.com/xenserver/status-report
+
 Make sure to have `git-lfs` installed before cloning. It is used for handling source archives separately.
 
 Branches:
