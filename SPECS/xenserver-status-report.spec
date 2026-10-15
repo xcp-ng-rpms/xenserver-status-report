@@ -29,6 +29,7 @@ Requires:       acpica-tools
 %if 0%{?xenserver} < 9
 Requires:       arptables
 %endif
+Requires:       binutils
 Requires:       biosdevname
 Requires:       bridge-utils
 Requires:       chrony
@@ -44,6 +45,7 @@ Requires:       ethtool
 %if 0%{?xenserver} < 9
 Requires:       fcoe-utils
 %endif
+Requires:       grep
 Requires:       gzip
 Requires:       hdparm
 %if 0%{?xenserver} >= 9
@@ -64,7 +66,9 @@ Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
 Requires:       python3-defusedxml
+Requires:       rpm
 Requires:       sg3_utils
+Requires:       sysstat
 Requires:       systemd
 Requires:       util-linux
 Requires:       xapi-core
