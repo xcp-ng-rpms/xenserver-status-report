@@ -14,6 +14,8 @@ Source0: xenserver-status-report-2.1.2.tar.gz
 # See https://github.com/xenserver/status-report/pull/173
 Patch1001: 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
 Patch1002: 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
+# Stop calling driver-tool
+Patch1003: 0003-Stop-calling-driver-tool.patch
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
