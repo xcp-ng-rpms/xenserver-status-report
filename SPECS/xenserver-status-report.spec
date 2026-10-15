@@ -7,6 +7,13 @@ Version: 2.1.2
 Release: 1%{?xsrel}%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report-2.1.2.tar.gz
+# XCP-ng patches. We keep rebasing on XenServer's package: these patches
+# are either temporary or meant not to get in the way of future rebases.
+# Two patches to collect all the rotated log files, to be dropped once a
+# XenServer release includes them
+# See https://github.com/xenserver/status-report/pull/173
+Patch1001: 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
+Patch1002: 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
