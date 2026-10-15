@@ -4,7 +4,7 @@
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
 Version: 2.1.2
-Release: 1%{?xsrel}%{?dist}
+Release: 1%{?xsrel}.1%{?dist}
 License:        GPLv2+
 Source0: xenserver-status-report-2.1.2.tar.gz
 # XCP-ng patches. We keep rebasing on XenServer's package: these patches
@@ -132,6 +132,17 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Thu Oct 15 2026 Seb Hinderer <sebastien.hinderer@vates.tech> - 2.1.2-1.1
+- Update to upstream 2.1.2-1
+- Restore the list of required packages removed by XenServer in 2.1.0
+- Add package dependencies missing in 2.0.15 (binutils, grep, rpm and sysstat)
+- Explicitly require python3, as xen-bugtool itself needs it
+- Add patches:
+  - 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
+  - 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
+  - 0003-Stop-calling-driver-tool.patch
+  - 0004-Stop-calling-nft-and-firewall-cmd.patch
+
 * Tue May 12 2026 Gerald Elder-Vass <gerald.elder-vass@citrix.com> - 2.1.2-1
 - CA-427358: Fix default value of readlines
 - Update testing environment and unit tests
