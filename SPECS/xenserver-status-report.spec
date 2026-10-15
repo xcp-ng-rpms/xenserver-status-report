@@ -16,18 +16,62 @@ BuildRequires:  python3-defusedxml
 # we disable the shebang check here
 %global __brp_mangle_shebangs %nil
 
+# XCP-ng: unlike XenServer since 2.1.0, require every package that provides
+# a program called by xen-bugtool. Keep this list in sync with these
+# programs when rebasing: most of them, but not all, are defined after the
+# "# External programs" comment in xen-bugtool. When weak dependencies
+# become available (in XCP-ng 9), it may be good to go over the list and
+# distinguish between packages that are necessary for this one to work
+# properly (like Python modules) and which should thus remain requirements,
+# and packages that enhance the current one and could thus be recommended
+# rather than required.
 Requires:       acpica-tools
 %if 0%{?xenserver} < 9
 Requires:       arptables
+%endif
+Requires:       biosdevname
+Requires:       bridge-utils
+Requires:       chrony
+Requires:       coreutils
+Requires:       device-mapper
+Requires:       device-mapper-multipath
+Requires:       dmidecode
+%if 0%{?xenserver} < 9
 Requires:       ebtables
-%else
+%endif
+Requires:       efibootmgr
+Requires:       ethtool
+%if 0%{?xenserver} < 9
+Requires:       fcoe-utils
+%endif
+Requires:       gzip
+Requires:       hdparm
+%if 0%{?xenserver} >= 9
 Requires:       hwloc-bugtool-plugin
 %endif
-Requires:       hdparm
+Requires:       iproute
 Requires:       iproute-tc
+Requires:       iptables
+Requires:       iscsi-initiator-utils
+Requires:       kmod
+Requires:       kpatch
+%if 0%{?xenserver} < 9
+Requires:       lldpad
+%endif
+Requires:       lvm2
+Requires:       mdadm
+Requires:       openvswitch
+Requires:       pciutils
+Requires:       procps-ng
 Requires:       python3-defusedxml
+Requires:       sg3_utils
+Requires:       systemd
+Requires:       util-linux
 Requires:       xapi-core
+Requires:       xapi-xe
 Requires:       xen-dom0-tools
+Requires:       xenopsd-xc
+Requires:       xen-tools
 
 %define bin0_name xen-bugtool
 
