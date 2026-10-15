@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Seb Hinderer <sebastien.hinderer@vates.tech>
+Date: Thu, 15 Oct 2026 21:50:15 +0200
+Subject: [PATCH] Stop calling nft and firewall-cmd
+Content-Type: text/plain; charset="utf-8"
+
+These programs do not exist on XCP-ng 8.3 so running them always
+fails, producing useless error messages that distract from genuine ones.
+
+Signed-off-by: Seb Hinderer <sebastien.hinderer@vates.tech>
+---
+ xen-bugtool | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/xen-bugtool b/xen-bugtool
+index 43a862d..5ec9628 100755
+--- a/xen-bugtool
++++ b/xen-bugtool
+@@ -1085,8 +1085,6 @@ exclude those logs from the archive.
+     cmd_output(CAP_NETWORK_STATUS, [EBTABLES, '-L'])
+     cmd_output(CAP_NETWORK_STATUS, [IPTABLES, '-nvL'])
+     cmd_output(CAP_NETWORK_STATUS, [BRCTL, 'show'])
+-    cmd_output(CAP_NETWORK_STATUS, [NFT, ' list', 'ruleset'])
+-    cmd_output(CAP_NETWORK_STATUS, [FIREWALL_CMD, '--list-all-zones'])
+     cmd_output(CAP_NETWORK_STATUS, [BIOSDEVNAME, '-d', '-x'])
+     for p in os.listdir('/sys/class/net/'):
+         if os.path.isdir('/sys/class/net/%s/bridge' % p):

@@ -16,6 +16,8 @@ Patch1001: 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
 Patch1002: 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
 # Stop calling driver-tool
 Patch1003: 0003-Stop-calling-driver-tool.patch
+# Stop calling nft and firewall-cmd
+Patch1004: 0004-Stop-calling-nft-and-firewall-cmd.patch
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
