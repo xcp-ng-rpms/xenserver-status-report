@@ -65,6 +65,7 @@ Requires:       mdadm
 Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
+Requires:       python3
 Requires:       python3-defusedxml
 Requires:       rpm
 Requires:       sg3_utils
