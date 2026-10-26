@@ -1,25 +1,46 @@
-%global package_speccommit 85ec815ee602854c406f89d067db620bc52b8c12
-%global package_srccommit v2.0.15
+%global package_speccommit 1ab9672c547e8d312d41d627337bf548fdd0d770
+%global package_srccommit v2.1.2
 
 Summary:        A program that generates status reports for a XenServer host
 Name:           xenserver-status-report
-Version: 2.0.15
-Release: 1%{?xsrel}%{?dist}
+Version: 2.1.2
+Release: 1%{?xsrel}.1%{?dist}
 License:        GPLv2+
-# Yes this is a very long line but it must remain as one line so that the koji tools can work on it.
-Source0: xenserver-status-report.tar.gz
+Source0: xenserver-status-report-2.1.2.tar.gz
+# XCP-ng patches. We keep rebasing on XenServer's package: these patches
+# are either temporary or meant not to get in the way of future rebases.
+# Two patches to collect all the rotated log files, to be dropped once a
+# XenServer release includes them
+# See https://github.com/xenserver/status-report/pull/173
+Patch1001: 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
+Patch1002: 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
+# Stop calling driver-tool
+Patch1003: 0003-Stop-calling-driver-tool.patch
+# Stop calling nft and firewall-cmd
+Patch1004: 0004-Stop-calling-nft-and-firewall-cmd.patch
 BuildArch:      noarch
 %if 0%{?xenserver} < 9
 BuildRequires:  help2man
 %endif
-BuildRequires:  python-defusedxml
+BuildRequires:  python3-defusedxml
 # Same code is used for XS8/python2 and XS9/python3
 # we disable the shebang check here
 %global __brp_mangle_shebangs %nil
 
-# Keep in sync with the External Programs list.
+# XCP-ng: unlike XenServer since 2.1.0, require every package that provides
+# a program called by xen-bugtool. Keep this list in sync with these
+# programs when rebasing: most of them, but not all, are defined after the
+# "# External programs" comment in xen-bugtool. When weak dependencies
+# become available (in XCP-ng 9), it may be good to go over the list and
+# distinguish between packages that are necessary for this one to work
+# properly (like Python modules) and which should thus remain requirements,
+# and packages that enhance the current one and could thus be recommended
+# rather than required.
 Requires:       acpica-tools
+%if 0%{?xenserver} < 9
 Requires:       arptables
+%endif
+Requires:       binutils
 Requires:       biosdevname
 Requires:       bridge-utils
 Requires:       chrony
@@ -27,14 +48,20 @@ Requires:       coreutils
 Requires:       device-mapper
 Requires:       device-mapper-multipath
 Requires:       dmidecode
+%if 0%{?xenserver} < 9
 Requires:       ebtables
+%endif
 Requires:       efibootmgr
 Requires:       ethtool
 %if 0%{?xenserver} < 9
 Requires:       fcoe-utils
 %endif
+Requires:       grep
 Requires:       gzip
 Requires:       hdparm
+%if 0%{?xenserver} >= 9
+Requires:       hwloc-bugtool-plugin
+%endif
 Requires:       iproute
 Requires:       iproute-tc
 Requires:       iptables
@@ -49,12 +76,11 @@ Requires:       mdadm
 Requires:       openvswitch
 Requires:       pciutils
 Requires:       procps-ng
-Requires:       python-defusedxml
-# For creating '/usr/bin/python' symlink to python3
-%if 0%{?xenserver} >= 9
-Requires:       python-unversioned-command
-%endif
+Requires:       python3
+Requires:       python3-defusedxml
+Requires:       rpm
 Requires:       sg3_utils
+Requires:       sysstat
 Requires:       systemd
 Requires:       util-linux
 Requires:       xapi-core
@@ -106,6 +132,44 @@ ln %{buildroot}/%{_mandir}/man1/%{bin0_name}.1 \
 %endif
 
 %changelog
+* Thu Oct 15 2026 Seb Hinderer <sebastien.hinderer@vates.tech> - 2.1.2-1.1
+- Update to upstream 2.1.2-1
+- Restore the list of required packages removed by XenServer in 2.1.0
+- Add package dependencies missing in 2.0.15 (binutils, grep, rpm and sysstat)
+- Explicitly require python3, as xen-bugtool itself needs it
+- Add patches:
+  - 0001-Add-failing-tests-showing-rotated-log-files-missing-.patch
+  - 0002-Collect-all-the-rotated-log-files-not-only-the-first.patch
+  - 0003-Stop-calling-driver-tool.patch
+  - 0004-Stop-calling-nft-and-firewall-cmd.patch
+
+* Tue May 12 2026 Gerald Elder-Vass <gerald.elder-vass@citrix.com> - 2.1.2-1
+- CA-427358: Fix default value of readlines
+- Update testing environment and unit tests
+- Update documentation
+- Address pylint/markdownlint warnings
+- Remove outdated Python 2.7 support
+
+* Wed Jan 21 2026 Bernhard Kaindl <bernhard.kaindl@citrix.com> - 2.1.1-1
+- CP-309679: Add Recommends for installing hwloc-bugtool-plugin to collect NUMA topology
+- CA-422743: Fix Kernel lockdown errors from debugfs accesses and cleanup Python 2.7 code
+
+* Wed Nov 26 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.1.0-1
+- CP-309293: Remove most dependencies on external programs
+- Switch the Python shebang to use Python3
+- Add missing b to binary string
+- Ensure we collect system logs
+
+* Fri Aug 08 2025 Bengang Yuan <bengang.yuan@cloud.com> - 2.0.18-1
+- Revert "Merge pull request #138 from stephenchengCloud/private/stephenche/CP-51925"
+- CP-308824: collect nft and firewall-cmd output
+
+* Fri Jul 25 2025 Stephen Cheng <stephen.cheng@cloud.com> - 2.0.17-1
+- CP-51925: Remove fcoe from bug-tool
+
+* Wed Jul 09 2025 Chunjie Zhu <chunjie.zhu@cloud.com> - 2.0.16-1
+- CP-308325: add driver multi version info dump data
+
 * Mon Jun 09 2025 Mark Syms <mark.syms@cloud.com> - 2.0.15-1
 - CP-308256: gather SR sqlite3-metadata.db files
 

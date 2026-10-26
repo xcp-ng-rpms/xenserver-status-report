@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Seb Hinderer <sebastien.hinderer@vates.tech>
+Date: Thu, 15 Oct 2026 21:41:13 +0200
+Subject: [PATCH] Stop calling driver-tool
+Content-Type: text/plain; charset="utf-8"
+
+On XCP-ng this tool does not exist. Although Xapi provides one, it is
+only a mock and the list of drivers it returns when called with
+the -l command-line option does not correspond to anything so it is
+better to simply not call it at all.
+
+Signed-off-by: Seb Hinderer <sebastien.hinderer@vates.tech>
+---
+ xen-bugtool | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/xen-bugtool b/xen-bugtool
+index 08377fc..43a862d 100755
+--- a/xen-bugtool
++++ b/xen-bugtool
+@@ -1022,7 +1022,6 @@ exclude those logs from the archive.
+     cmd_output(CAP_HARDWARE_INFO, [LSPCI, '-vv'])
+     cmd_output(CAP_HARDWARE_INFO, [LSPCI, '-nm'])
+     cmd_output(CAP_HARDWARE_INFO, [LSPCI, '-nnm'])
+-    cmd_output(CAP_HARDWARE_INFO, [DRIVER_TOOL, '-l'])
+     cmd_output(CAP_HARDWARE_INFO, [ACPIDUMP])
+     file_output(CAP_HARDWARE_INFO, [PROC_USB_DEV, PROC_SCSI])
+     file_output(CAP_HARDWARE_INFO, [BOOT_TIME_CPUS, BOOT_TIME_MEMORY])

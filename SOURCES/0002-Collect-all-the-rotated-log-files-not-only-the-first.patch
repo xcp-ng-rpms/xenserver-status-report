@@ -1,0 +1,226 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Seb Hinderer <sebastien.hinderer@vates.tech>
+Date: Tue, 13 Oct 2026 16:58:04 +0200
+Subject: [PATCH] Collect all the rotated log files, not only the first 19
+Content-Type: text/plain; charset="utf-8"
+
+The tests added in the previous commit now pass. They check which
+rotated files are collected, but not in which order. A unit test of
+the new get_rotated_logs() checks that the rotated files are sorted by
+rotation number, then by log, and that the verbosity limits their
+number.
+
+Signed-off-by: Seb Hinderer <sebastien.hinderer@vates.tech>
+---
+ tests/unit/test_fs_funcs.py |  20 ++++++
+ tests/unit/test_main.py     |   2 -
+ xen-bugtool                 | 131 ++++++++++++++++++++++++++----------
+ 3 files changed, 116 insertions(+), 37 deletions(-)
+
+diff --git a/tests/unit/test_fs_funcs.py b/tests/unit/test_fs_funcs.py
+index 9e197a6..9ac237b 100644
+--- a/tests/unit/test_fs_funcs.py
++++ b/tests/unit/test_fs_funcs.py
+@@ -12,6 +12,26 @@ def test_get_recent_logs(bugtool):
+     assert bugtool.get_recent_logs(files, 1) == [files[1]]
+ 
+ 
++def test_get_rotated_logs(bugtool, tmpdir):
++    """Assert get_rotated_logs() returning all the rotations of the logs"""
++
++    kern = str(tmpdir.join("kern.log"))
++    wtmp = str(tmpdir.join("wtmp"))
++    for name in ["kern.log", "kern.log.1", "kern.log.1.bak", "wtmp.1"]:
++        tmpdir.join(name).write("")
++    for number in range(2, 26):
++        tmpdir.join("kern.log.%d.gz" % number).write("")
++
++    # All the rotations, beyond the 19th, ordered by number, then by log.
++    # kern.log.1.bak is not a rotation: neither `<log>.<n>` nor `<log>.<n>.gz`.
++    expected = [kern + ".1", wtmp + ".1"] + [kern + ".%d.gz" % n for n in range(2, 26)]
++    assert bugtool.get_rotated_logs([kern, wtmp], 9) == expected
++    # 8 is the highest verbosity which limits the rotations: only return
++    # the rotations 1 to 7:
++    expected = [kern + ".1", wtmp + ".1"] + [kern + ".%d.gz" % n for n in range(2, 8)]
++    assert bugtool.get_rotated_logs([kern, wtmp], 8) == expected
++
++
+ def test_read_inventory(bugtool, dom0_template):
+     """Assert readKeyValueFile() reading the a xensource inventory file"""
+ 
+diff --git a/tests/unit/test_main.py b/tests/unit/test_main.py
+index 5fc6d92..b917b60 100644
+--- a/tests/unit/test_main.py
++++ b/tests/unit/test_main.py
+@@ -382,7 +382,6 @@ def collect_system_logs(bugtool, mocker, base_path, tmp_path, log_names):
+     return [name[len(archived_dir) :] for name in names if name.startswith(archived_dir)]
+ 
+ 
+-@pytest.mark.xfail(reason="Only the rotations 1 to 19 of the logs are collected")
+ def test_main_collects_log_rotations_beyond_19(patched_bugtool, mocker):
+     """Assert that main() collects all the rotations of a log, beyond the 19th"""
+ 
+@@ -393,7 +392,6 @@ def test_main_collects_log_rotations_beyond_19(patched_bugtool, mocker):
+     assert sorted(archived) == sorted(log_names)
+ 
+ 
+-@pytest.mark.xfail(reason="Only the compressed rotations of wtmp are collected")
+ def test_main_collects_uncompressed_wtmp_rotation(patched_bugtool, mocker):
+     """Assert that main() collects the uncompressed rotation of wtmp"""
+ 
+diff --git a/xen-bugtool b/xen-bugtool
+index 7ff562f..08377fc 100755
+--- a/xen-bugtool
++++ b/xen-bugtool
+@@ -663,6 +663,26 @@ def get_recent_logs(logs, verbosity):
+     return [x[1] for x in (logs[-verbosity:] if verbosity < 9 else logs)]
+ 
+ 
++def get_rotated_logs(logs, verbosity):
++    """Return the rotated files of the given logs, most recent rotations first.
++
++    The rotated files of a log are named `<log>.<n>` or `<log>.<n>.gz`. They are
++    sorted by rotation number, and the logs are interleaved in the order they
++    are given for each rotation number. On verbosity<9, only the rotations
++    with a number below the verbosity are returned, otherwise all of them."""
++
++    rotations = []
++    for index, log in enumerate(logs):
++        pattern = re.compile(re.escape(log) + r"\.([0-9]+)(\.gz)?$")
++        for path in glob.glob(glob.escape(log) + ".[0-9]*"):
++            match = pattern.match(path)
++            if match:
++                number = int(match.group(1))
++                if verbosity >= 9 or number < verbosity:
++                    rotations.append((number, index, path))
++    return [path for (_, _, path) in sorted(rotations)]
++
++
+ def include_inventory(archive, dir):
+     """Add the inventory.xml to the archive, filled from the current data"""
+ 
+@@ -1173,18 +1193,45 @@ exclude those logs from the archive.
+     cmd_output(CAP_PROCESS_LIST, [PS, 'wwwaxf', '-eo', 'pid,tty,stat,time,nice,psr,pcpu,pmem,nwchan,wchan:25,args'], label='process-tree')
+     func_output(CAP_PROCESS_LIST, 'fd_usage', fd_usage)
+ 
+-    def get_log_range(verbosity):
+-        return range(1, verbosity) if verbosity < 9 else range(1, 20)
+-
+-    system_logs = [VAR_LOG_DIR + x for x in
+-           ['crit.log', 'kern.log', 'daemon.log', 'user.log', 'syslog', 'messages', 'monitor_memory.log', 'secure',
+-            'debug', 'dmesg', 'boot.msg', 'blktap.log', 'xen-dmesg', 'wtmp', 'xen/hypervisor.log', 'mcelog', 'dnf5.log',
+-            'yum.log'] + [f % n for n in get_log_range(caps[CAP_SYSTEM_LOGS][VERBOSITY]) for f in
+-                          ['crit.log.%d', 'crit.log.%d.gz', 'kern.log.%d', 'kern.log.%d.gz', 'daemon.log.%d',
+-                           'daemon.log.%d.gz', 'user.log.%d', 'user.log.%d.gz', 'messages.%d', 'messages.%d.gz',
+-                           'monitor_memory.log.%d', 'monitor_memory.log.%d.gz', 'secure.%d', 'secure.%d.gz',
+-                           'xen/hypervisor.log.%d', 'xen/hypervisor.log.%d.gz', 'blktap.log.%d', 'wtmp.%d.gz',
+-                           'dnf5.log.%d', 'dnf5.log.%d.gz', 'yum.log.%d', 'yum.log.%d.gz']]]
++    system_log_names = [
++        'crit.log',
++        'kern.log',
++        'daemon.log',
++        'user.log',
++        'syslog',
++        'messages',
++        'monitor_memory.log',
++        'secure',
++        'debug',
++        'dmesg',
++        'boot.msg',
++        'blktap.log',
++        'xen-dmesg',
++        'wtmp',
++        'xen/hypervisor.log',
++        'mcelog',
++        'dnf5.log',
++        'yum.log',
++    ]
++    rotated_system_log_names = [
++        'crit.log',
++        'kern.log',
++        'daemon.log',
++        'user.log',
++        'messages',
++        'monitor_memory.log',
++        'secure',
++        'xen/hypervisor.log',
++        'blktap.log',
++        'wtmp',
++        'dnf5.log',
++        'yum.log',
++    ]
++    system_logs = [VAR_LOG_DIR + log_name for log_name in system_log_names]
++    system_logs += get_rotated_logs(
++        [VAR_LOG_DIR + log_name for log_name in rotated_system_log_names],
++        caps[CAP_SYSTEM_LOGS][VERBOSITY],
++    )
+     update_cap_size(CAP_SYSTEM_LOGS, size_of_all(system_logs))
+     file_output(CAP_SYSTEM_LOGS, system_logs)
+     if not os.path.exists('/var/log/dmesg') and not os.path.exists('/var/log/boot.msg'):
+@@ -1259,29 +1306,43 @@ exclude those logs from the archive.
+     except:
+         pass
+ 
+-    xenserver_logs = \
+-                [ VAR_LOG_DIR + x for x in
+-                  ['xensource.log', 'audit.log', 'xenstored-access.log',
+-                   'SMlog', 'isl_trace.log',  'xen/xenstored-trace.log',
+-                   'xen/xen-hotplug.log', 'xen/domain-builder-ng.log',
+-                   'squeezed.log', 'openvswitch/ovs-brcompatd.log',
+-                   'openvswitch/ovs-vswitchd.log', 'openvswitch/ovsdb-server.log',
+-                   'telemetry/telemetry.log', 'telemetry/license_server.log',
+-                   'xha.log'] +
+-                  [ f % n for n in get_log_range(caps[CAP_XENSERVER_LOGS][VERBOSITY]) \
+-                        for f in ['xensource.log.%d', 'xensource.log.%d.gz',
+-                                  'SMlog.%d', 'SMlog.%d.gz',
+-                                  'isl_trace.log.%d', 'isl_trace.log.%d.gz',
+-                                  'audit.log.%d', 'audit.log.%d.gz',
+-                                  'xenstored-access.log.%d', 'xenstored-access.log.%d.gz',
+-                                  'xen/xenstored-access.log.%d', 'xen/xenstored-access.log.%d.gz',
+-                                  'squeezed.log.%d', 'squeezed.log.%d.gz',
+-                                  'openvswitch/ovs-brcompatd.log.%d', 'openvswitch/ovs-brcompatd.log.%d.gz',
+-                                  'openvswitch/ovs-vswitchd.log.%d', 'openvswitch/ovs-vswitchd.log.%d.gz',
+-                                  'openvswitch/ovsdb-server.log.%d', 'openvswitch/ovsdb-server.log.%d.gz',
+-                                  'telemetry/telemetry.log.%d', 'telemetry/telemetry.log.%d.gz',
+-                                  'telemetry/license_server.log.%d', 'telemetry/license_server.log.%d.gz',
+-                                  'xha.log.%d', 'xha.log.%d.gz']]]
++    xenserver_log_names = [
++        'xensource.log',
++        'audit.log',
++        'xenstored-access.log',
++        'SMlog',
++        'isl_trace.log',
++        'xen/xenstored-trace.log',
++        'xen/xen-hotplug.log',
++        'xen/domain-builder-ng.log',
++        'squeezed.log',
++        'openvswitch/ovs-brcompatd.log',
++        'openvswitch/ovs-vswitchd.log',
++        'openvswitch/ovsdb-server.log',
++        'telemetry/telemetry.log',
++        'telemetry/license_server.log',
++        'xha.log',
++    ]
++    rotated_xenserver_log_names = [
++        'xensource.log',
++        'SMlog',
++        'isl_trace.log',
++        'audit.log',
++        'xenstored-access.log',
++        'xen/xenstored-access.log',
++        'squeezed.log',
++        'openvswitch/ovs-brcompatd.log',
++        'openvswitch/ovs-vswitchd.log',
++        'openvswitch/ovsdb-server.log',
++        'telemetry/telemetry.log',
++        'telemetry/license_server.log',
++        'xha.log',
++    ]
++    xenserver_logs = [VAR_LOG_DIR + log_name for log_name in xenserver_log_names]
++    xenserver_logs += get_rotated_logs(
++        [VAR_LOG_DIR + log_name for log_name in rotated_xenserver_log_names],
++        caps[CAP_XENSERVER_LOGS][VERBOSITY],
++    )
+ 
+     # Collect SAR data (binary and text, and add today's report with sar -A)
+     cmd_output(CAP_SYSTEM_LOAD, ['sar', '-A'])
